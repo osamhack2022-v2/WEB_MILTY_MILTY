@@ -10,6 +10,32 @@ const { user_get_request } = require('../controllers/user_request');
 
 // #### Auth region ####
 // login 데이터 받는 곳
+/**
+* @swagger
+* /signin:
+*   get:
+*     tags: [SignIn]
+*     summary: 로그인 페이지
+*     responses:
+*       "200":
+*         description: 로그인 페이지 로드 성공
+*   post:
+*     tags: [SignIn]
+*     summary: 로그인 로직 처리
+*     parameters:
+*       - name: code
+*         in: Post
+*         type: string
+*         description: 로그인 정보(아이디)
+*     responses:
+*       "200":
+*         discription: 로그인 성공
+*         contnet:
+*           application:json
+*       "400":
+*         discription: 잘못된 파라메타 전달
+*     
+*/
 router.post(
   '/login',
   passport.authenticate('local', {

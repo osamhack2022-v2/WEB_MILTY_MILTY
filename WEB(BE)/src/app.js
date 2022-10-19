@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
+const { swaggerUi, specs } = require('./apidocs/swagger');
 
 const app = express();
 const path = require('path');
@@ -46,6 +47,10 @@ app.use(passport.session());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
+// #endregion
+
+// # region SWAGGER
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 // #endregion
 
 // #region ROUTES
