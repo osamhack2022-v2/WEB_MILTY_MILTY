@@ -16,7 +16,7 @@ module.exports = class Request extends Sequelize.Model {
           type: Sequelize.INTEGER,
           primaryKey: true,
           allowNull: true,
-          unique: true,
+          unique: false,
         },
         request_type: {
           type: Sequelize.INTEGER,
