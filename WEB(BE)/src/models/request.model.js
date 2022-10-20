@@ -23,8 +23,8 @@ module.exports = class Request extends Sequelize.Model {
           allowNull: false,
           unique: true,
         },
-        request_duty: {
-          type: Sequelize.DATE,
+        duty_schedule_pid: {
+          type: Sequelize.INTEGER,
           allowNull: false,
           unique: false,
         },

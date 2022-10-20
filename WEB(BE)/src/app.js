@@ -12,7 +12,6 @@ const session = require('express-session');
 
 // #region SEQULIZE
 const { sequelize } = require('./config/database');
-
 (async () => {
   await sequelize
     .sync({ alter: true })

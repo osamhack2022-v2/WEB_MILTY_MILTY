@@ -8,6 +8,8 @@ const duty_scheduleModel = require('../models/duty_schedule.model');
 require('dotenv').config();
 
 
+
+
 const sequelize = new Sequelize(
   process.env.DB_TABLE,
   process.env.DB_ID,
