@@ -30,7 +30,7 @@ exports.user_set_request = async function (req, res) {
     request_change_usr
   } = req.body;
   // 건의사항
-  if (request_list == 0) {
+  if (request_type == 0) {
     request
       .create({
         request_type,
@@ -49,7 +49,7 @@ exports.user_set_request = async function (req, res) {
       });
   }
   // 근무변경
-  else if (request_list == 1) {
+  else if (request_type == 1) {
     request
       .create({
         request_type,
