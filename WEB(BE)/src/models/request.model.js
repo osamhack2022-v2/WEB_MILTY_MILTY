@@ -15,7 +15,7 @@ module.exports = class Request extends Sequelize.Model {
         request_pid: {
           type: Sequelize.INTEGER,
           primaryKey: true,
-          allowNull: false,
+          allowNull: true,
           unique: true,
         },
         request_type: {
