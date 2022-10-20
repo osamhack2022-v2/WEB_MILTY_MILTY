@@ -19,7 +19,7 @@ request_check
   2 - 처리완료
 */
 
-// 건의사항 및 근무변경 저장
+// 건의사항 및 근무변경 저장 테스트 : 확인중
 exports.user_set_request = async function (req, res) {
   const {
     request_type,
@@ -76,7 +76,7 @@ exports.user_get_request = async function (req, res) {
   const {
     usr_pid
   } = req.body;
-  const requests = await Users.findAll({ where: { request_user: request_user } });
+  const requests = await Users.findAll({ where: { request_usr: request_usr } });
 
   for (var i = 0; i < requests.length; i++) {
     res.status(200).json({
