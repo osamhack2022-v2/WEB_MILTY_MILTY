@@ -78,6 +78,7 @@ exports.user_get_request = async function (req, res) {
   const {
     usr_pid
   } = req.body;
+
   const requests = await User.findAll({ where: { request_usr: request_usr } });
 
   for (var i = 0; i < requests.length; i++) {
