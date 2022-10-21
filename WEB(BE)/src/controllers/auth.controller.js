@@ -25,7 +25,7 @@ exports.register = async function (req, res) {
 
   const now = new Date();
 
-  if (id == null && checked == false) {   // 가입할 때 이미 존재하는 id인지, 그리고 관리자 권한을 체크 안했는지 확인되면 병사로 가입
+  if (id == null && checked !== true) {
     // 존재하지 않으면 회원가입 저장
     console.log('checked == false 조건문');
     let user = Users.create({
@@ -36,7 +36,7 @@ exports.register = async function (req, res) {
       usr_division: user_division,
       usr_division_code: user_division_code,
       usr_class: user_class,
-      classification: 0,
+      classification: 0,      // 병사로 가입  
       usr_discharge_date: user_discharge_date,
       created_at: now   // 가입일
     })
@@ -59,7 +59,7 @@ exports.register = async function (req, res) {
       usr_division: user_division,
       usr_division_code: user_division_code,
       usr_class: user_class,
-      classification: null,
+      classification: null,     // 관리자로 가입 - DB 서버에서 관리자가 1로 바꿈.
       usr_discharge_date: user_discharge_date,
       created_at: now   // 가입일
     })
