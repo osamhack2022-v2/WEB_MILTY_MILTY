@@ -1,6 +1,5 @@
 const { Sequelize } = require('sequelize');
 const path = require('path');
-const adminModel = require('../models/admin.model');
 const requestModel = require('../models/request.model');
 const userModel = require('../models/users.model');
 const dutyModel = require('../models/duty.model');
@@ -25,13 +24,11 @@ const sequelize = new Sequelize(
 const db = {};
 db.sequelize = sequelize;
 
-db.admin = adminModel;
 db.request = requestModel;
 db.user = userModel;
 db.duty = dutyModel;
 db.duty_schedule = duty_scheduleModel;
 
-adminModel.init(sequelize);
 requestModel.init(sequelize);
 userModel.init(sequelize);
 dutyModel.init(sequelize);
