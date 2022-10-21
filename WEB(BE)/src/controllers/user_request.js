@@ -1,4 +1,6 @@
 const request = require('../models/request.model');
+const User = require('../models/users.model')
+
 /*
 `request_pid`	int	NOT NULL,
   `request_list`	varchar2(30)	NULL,
@@ -76,13 +78,14 @@ exports.user_get_request = async function (req, res) {
   const {
     usr_pid
   } = req.body;
-  const requests = await Users.findAll({ where: { request_usr: request_usr } });
+  const requests = await User.findAll({ where: { request_usr: request_usr } });
 
   for (var i = 0; i < requests.length; i++) {
     res.status(200).json({
       result: 'success',
       request: {
         request_type: requests[i].request_type,
+        request_pid: requests[i].request_pid,
         duty_schedule_pid: requests[i].duty_schedule_pid,
         request_reason: requests[i].request_reason,
         request_date: requests[i].request_date,
