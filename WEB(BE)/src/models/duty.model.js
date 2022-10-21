@@ -14,7 +14,7 @@ module.exports = class Duty extends Sequelize.Model {
         usr_division_code: {
           type: Sequelize.INTEGER,
           allowNull: false,
-          unique: true,
+          unique: false,
         },
         duty_name: {
           type: Sequelize.STRING(100),

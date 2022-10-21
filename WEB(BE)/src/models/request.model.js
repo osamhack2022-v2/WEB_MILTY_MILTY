@@ -16,6 +16,7 @@ module.exports = class Request extends Sequelize.Model {
           type: Sequelize.INTEGER,
           primaryKey: true,
           allowNull: true,
+          autoIncrement: true,
           unique: true,
         },
         request_type: {
@@ -41,7 +42,7 @@ module.exports = class Request extends Sequelize.Model {
         request_usr: {
           type: Sequelize.INTEGER,
           allowNull: true,
-          unique: false,
+          unique: true,
         },
         request_change_usr: {
           type: Sequelize.INTEGER,

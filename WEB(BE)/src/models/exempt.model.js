@@ -26,7 +26,7 @@ module.exports = class Exempt extends Sequelize.Model {
           allowNull: false,
           unique: false,
         },
-        exempt_list: {
+        exempt_type: {
           type: Sequelize.STRING(100),
           allowNull: false,
           unique: false,

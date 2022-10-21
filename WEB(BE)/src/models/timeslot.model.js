@@ -14,7 +14,7 @@ module.exports = class Timeslot extends Sequelize.Model {
         timeslot_start: {
           type: Sequelize.TIME,
           allowNull: false,
-          unique: true,
+          unique: false,
         },
         timeslot_end: {
           type: Sequelize.TIME,
@@ -24,7 +24,7 @@ module.exports = class Timeslot extends Sequelize.Model {
         duty_pid: {
           type: Sequelize.INTEGER,
           allowNull: false,
-          unique: false,
+          unique: true,
         },
         timeslot_point: {
           type: Sequelize.FLOAT,
@@ -36,7 +36,7 @@ module.exports = class Timeslot extends Sequelize.Model {
         sequelize,
         timestamps: false,
         underscored: false,
-        tableName: 'time_slot',
+        tableName: 'timeslot',
         paranoid: false,
         charset: 'utf8mb4',
         collate: 'utf8mb4_general_ci',
