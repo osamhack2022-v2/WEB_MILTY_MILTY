@@ -17,9 +17,6 @@ const sequelize = new Sequelize(
     port: process.env.DB_PORT || 3306,
     dialect: 'mysql',
     timezone: '+09:00', // DB에 저장할 때 시간 설정
-    dialectOptions: {
-      timezone: '+09:00', // DB에서 가져올 때 시간 설정
-    },
     models: [path.join(__dirname, '../models')],
   },
 );

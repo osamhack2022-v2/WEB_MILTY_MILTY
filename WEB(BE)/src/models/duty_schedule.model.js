@@ -1,4 +1,5 @@
 const Sequelize = require('sequelize');
+const moment = require('moment');
 
 module.exports = class Duty_Schedule extends Sequelize.Model {
   static init(sequelize) {
@@ -30,7 +31,12 @@ module.exports = class Duty_Schedule extends Sequelize.Model {
           type: Sequelize.DATE,
           allowNull: false,
           unique: false,
-        }
+          get() {
+            return moment(this.getDataValue('duty_schedule_date')).format(
+              'YYYY-MM-DD',
+            );
+          },
+        },
       },
       {
         sequelize,

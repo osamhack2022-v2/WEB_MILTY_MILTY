@@ -1,4 +1,5 @@
 const Sequelize = require('sequelize');
+const moment = require('moment');
 
 module.exports = class Timeslot extends Sequelize.Model {
   static init(sequelize) {
@@ -15,11 +16,22 @@ module.exports = class Timeslot extends Sequelize.Model {
           type: Sequelize.TIME,
           allowNull: false,
           unique: false,
+          get() {
+            return moment(
+              this.getDataValue('timeslot_start'),
+              'hh:mm:ss',
+            ).format('hh:mm');
+          },
         },
         timeslot_end: {
           type: Sequelize.TIME,
           allowNull: false,
           unique: false,
+          get() {
+            return moment(this.getDataValue('timeslot_end'), 'hh:mm:ss').format(
+              'hh:mm',
+            );
+          },
         },
         duty_pid: {
           type: Sequelize.INTEGER,
@@ -30,7 +42,7 @@ module.exports = class Timeslot extends Sequelize.Model {
           type: Sequelize.FLOAT,
           allowNull: false,
           unique: false,
-        }
+        },
       },
       {
         sequelize,
