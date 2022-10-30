@@ -82,9 +82,4 @@ router.post('/set-user-exempt', set_user_exempt);
 router.post('/get-user-exempt', get_user_exempt);
 // #### End region ####
 
-// #### Exempt region ####
-// 유저 대시보드
-router.post('/get-user-dashboard', get_user_duty_on_dashboard);
-// #### End region ####
-
 module.exports = router;

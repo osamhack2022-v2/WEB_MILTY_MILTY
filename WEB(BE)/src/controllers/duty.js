@@ -181,9 +181,9 @@ exports.set_duty_schedule = async (req, res) => {
       // timeslot_list[i]와 usr_list[i]를 매칭
       console.log(
         'matching ' +
-          usr_list[i]['usr_pid'] +
-          ' -- ' +
-          timeslot_list[i]['timeslot_pid'],
+        usr_list[i]['usr_pid'] +
+        ' -- ' +
+        timeslot_list[i]['timeslot_pid'],
       );
       Duty_Schedule.create({
         duty_schedule_division_code: user_division_code,
@@ -319,9 +319,4 @@ exports.check_duty_schedule = async (req, res) => {
     console.warn(err);
     res.status(200).json({ result: 'fail' });
   }
-};
-
-// 유저 근무 대시보드 조회(수정중)
-exports.get_user_duty_on_dashboard = async (req, res) => {
-  const { user_pid } = req.body;
 };
