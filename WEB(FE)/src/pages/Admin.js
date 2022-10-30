@@ -11,6 +11,7 @@ import {
   LogoutOutlined,
 } from "@ant-design/icons";
 import WriteDuty from "./WriteDuty";
+import CheckDutyPrecept from "./CheckDutyPrecept";
 import Exemptlist from "./Exemptlist";
 import SetDuty from "./SetDuty";
 import Soldierlist from "./Soldierlist";
@@ -104,6 +105,7 @@ const Admin = () => {
         </Sider>
         <Routes>
           <Route path="/write-duty" element={<WriteDuty />} />
+          <Route path="/check-duty/:date" element={<CheckDutyPrecept />} />
           <Route path="/exemptlist" element={<Exemptlist />} />
           <Route path="/set-duty" element={<SetDuty />} />
           <Route path="/soldierlist" element={<Soldierlist />} />
