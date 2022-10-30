@@ -161,15 +161,15 @@ exports.set_duty_schedule = async (req, res) => {
     console.log('근무자 리스트 : ', usr_list);
 
     // 근무자 - 근무 매칭
-    if (usr_list.length < timeslot_list.length)
-      throw new Error('근무 가능 인원 부족');
-
     usr_list.sort((a, b) => {
       return a['usr_point'] > b['usr_point'];
     });
     // 최악의 상황에서도 근무 가능자 수 x 4 >= 필요 근무자라고 가정 (일반적으로는 근무 가능자 >= 필요 근무자)
     usr_list = usr_list.concat(usr_list.slice());
     usr_list = usr_list.concat(usr_list.slice());
+
+    if (usr_list.length < timeslot_list.length)
+      throw new Error('근무 가능 인원 부족');
 
     timeslot_list.sort((a, b) => {
       return a['timeslot_point'] < b['timeslot_point'];
