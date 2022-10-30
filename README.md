@@ -111,7 +111,7 @@ $ 3. WEB(BE) 경로에서 npm start로 실행
 Milty는 별도의 설정이나 메뉴얼 없이도 직관적인 UI를 통해 바로 사용이 가능합니다!
 
 ### 기능 API 목록
-SwaggerUI를 적용하여 API 목록을 확인할 수 있습니다.
+개발 단계에서 SwaggerUI를 적용하여, API 목록을 손쉽게 확인할 수 있습니다.
 
 <table>
   <tr>
