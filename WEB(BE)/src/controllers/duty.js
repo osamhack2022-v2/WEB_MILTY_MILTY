@@ -121,7 +121,7 @@ exports.set_duty_schedule = async function (req, res) {
   // ==== End Region ====
 
   // ==== Start Region : 현재 열외자 리스트 생성((이 부분 고쳐야 합니다. 열외자 리스트는 잘 나오는데 기간에 따라서 걸려지지가 않습니다.) ====
-  const current_excluder_objects = await Exempt.findOne({
+  const current_excluder_objects = await Exempt.findAll({
     attributes: ['usr_pid'],
     where: { exempt_division_code: user_division_code },
     [Op.and]: [
@@ -181,14 +181,14 @@ exports.set_duty_schedule = async function (req, res) {
       Duty_Schedule.create({
         duty_schedule_division_code: user_division_code,
         duty_schedule_date: date,
-        timeslot_pid: timeslots_list[i]['timeslot_pid'],
+        timeslot_pid: timeslot_list[i]['timeslot_pid'],
         usr_pid: usr_list[i]['usr_pid'],
       });
       // usr_list[i]['usr_pid']를 가진 user의 usr_point에 timeslot_list[i]['timeslot_point'] 가산
       // UPDATE User
       //   SET usr_point = usr_point + timeslot_list[i]['timeslot_point']
       //   WHERE usr_pid = usr_list[i]['usr_pid']
-      User.increment({ 'usr_point': timeslots_list[i]['timeslot_point'] },
+      User.increment({ 'usr_point': timeslot_list[i]['timeslot_point'] },
         { where: { 'usr_pid': usr_list[i]['usr_pid'] } });
     }
 
