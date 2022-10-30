@@ -3,13 +3,13 @@
 
 
 
-# 프로젝트 소개
-## MILTY 기획의도
+# :book:프로젝트 소개
+## :bookmark_tabs:MILTY 기획의도
 * 손쉬운 장병 근무 관리를 위한 주요 기능 구현
 * 공정한 근무 분배를 위한 경작서 자동제작 알고리즘 설계
 * 부대별 다양한 근무유형을 반영한 관리플랫폼 제작
 
-## 근무자 주요 기능
+## :running:근무자 주요 기능
 
 <table>
   <tr>
@@ -33,7 +33,7 @@
 </table>
 
 
-## 관리자 주요 기능
+## :cop:관리자 주요 기능
 
 <table>
   <tr>
@@ -66,13 +66,13 @@
   </tr>
 </table>
 
-# 컴퓨터 구성 / 필수 조건 안내 (prerequisites)
+## :computer:컴퓨터 구성 / 필수 조건 안내 (prerequisites)
 
 * ECMAScript 6 지원 브라우저 사용
 * 권장: Google Chrome 버젼 77 이상
 
 
-## 기술 스택 & 오픈 소스 (Technique Used)
+## :hammer:기술 스택 & 오픈 소스 (Technique Used)
 <h3>Back-End</h3>
 
 * JavaScript
@@ -95,7 +95,7 @@
 * Sequelize orm
 
 
-# 설치 안내 (Installation Process)
+## :wrench:설치 안내 (Installation Process)
 ```
 $ 1. git clone https://github.com/osamhack2022-v2/WEB_MILTY_MILTY.git
 $ 2. WEB(FE) 경로에서 yarn install하고 yarn build / WEB(BE) 경로에서 npm install
@@ -103,11 +103,11 @@ $ 3. WEB(BE) 경로에서 npm start로 실행
 ```
 
 
-# 프로젝트 사용법 (Getting Started)
+## :question:프로젝트 사용법 (Getting Started)
 Milty는 별도의 설정이나 메뉴얼 없이도 직관적인 UI를 통해 바로 사용이 가능합니다!
 
 
-# 팀 정보 (Team Information)
+## :raising_hand:팀 정보 (Team Information)
 * 김재준 (jkimkr08@gmail.com), Github Id: jaeiko
 * 권종원 (ty_ty123@naver.com), Github Id: kwonjongwon123
 * 이순형 (tnsgud9@naver.com), Github Id: tnsgud9
