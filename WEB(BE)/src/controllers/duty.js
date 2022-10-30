@@ -7,6 +7,7 @@ Timeslot.belongsTo(Duty, { foreignKey: 'duty_pid' });
 const Duty_Schedule = require('../models/duty_schedule.model');
 const Exempt = require('../models/exempt.model');
 const { Op } = require('sequelize');
+const { sequelize } = require('../models/users.model');
 
 // 근무 종류 생성(구현 완료)
 exports.set_duty = async (req, res) => {
@@ -142,7 +143,7 @@ exports.set_duty_schedule = async (req, res) => {
         usr_class: {
           [Op.or]: ['이병', '일병', '상병', '병장'],
         },
-      }
+      },
     },
   });
 
@@ -177,9 +178,9 @@ exports.set_duty_schedule = async (req, res) => {
     // timeslot_list[i]와 usr_list[i]를 매칭
     console.log(
       'matching ' +
-      usr_list[i]['usr_pid'] +
-      ' -- ' +
-      timeslot_list[i]['timeslot_pid'],
+        usr_list[i]['usr_pid'] +
+        ' -- ' +
+        timeslot_list[i]['timeslot_pid'],
     );
     Duty_Schedule.create({
       duty_schedule_division_code: user_division_code,
@@ -205,63 +206,51 @@ exports.set_duty_schedule = async (req, res) => {
 
 // 해당 날짜의 근무표 조회
 exports.get_duty_schedule = async (req, res) => {
-  const {
-    usr_division_code, // 근무 PID
-    date,
-  } = req.body;
-  // duty_pid, timeslot_start, timeslot_end, user_name
+  const { usr_division_code, date } = req.body;
 
-  const duty_schedules = await Duty_Schedule.findAll({
+  const schedule = await Duty_Schedule.findAll({
     attributes: ['usr_pid', 'timeslot_pid'],
     where: {
       [Op.and]: [
         { duty_schedule_division_code: usr_division_code },
-        { duty_schedule_date: date }
-      ]
-    }
+        sequelize.where(
+          sequelize.fn('date', sequelize.col('duty_schedule_date')),
+          '=',
+          date,
+        ),
+      ],
+    },
   });
 
-  let data_list = [];
-  for (const d of duty_schedules) {
-    data_list.push({
-      'timeslot_pid': d.dataValues['timeslot_pid'],
-      'usr_pid': d.dataValues['usr_pid']
-    });
-  }
+  let data = {};
+  await Promise.all(
+    schedule.map(async ({ duty_schedule_pid, timeslot_pid }) => {
+      const { duty_pid, timeslot_start, timeslot_end } = await Timeslot.findOne(
+        { where: { timeslot_pid } },
+      );
+      const { duty_name } = await Duty.findOne({ where: duty_pid });
 
-  for (let i = 0; i < data_list.length; i++) {
-    const timeslot_object = await Timeslot.findOne({
-      attributes: ['duty_pid', 'timeslot_start', 'timeslot_end'],
-      where: { 'timeslot_pid': data_list[i]['timeslot_pid'] }
-    });
-    data_list[i]['duty_pid'] = timeslot_object.dataValues['duty_pid'];
-    data_list[i]['timeslot_start'] = timeslot_object.dataValues['timeslot_start'];
-    data_list[i]['timeslot_end'] = timeslot_object.dataValues['timeslot_end'];
-  }
+      if (data[duty_pid] === undefined) {
+        data[duty_pid] = {};
+        data[duty_pid].duty_pid = duty_pid;
+        data[duty_pid].duty_name = duty_name;
+        data[duty_pid].schedule = [];
+      }
+      data[duty_pid].schedule.push({
+        pid: duty_schedule_pid,
+        start_time: timeslot_start,
+        end_time: timeslot_end,
+      });
+    }),
+  );
 
-  for (let i = 0; i < data_list.length; i++) {
-    const duty_object = await Duty.findOne({
-      attributes: ['duty_pid', 'duty_name'],
-      where: { 'duty_pid': data_list[i]['duty_pid'] }
-    });
-    data_list[i]['duty_name'] = duty_object.dataValues['duty_name'];
-  }
-
-  for (let i = 0; i < data_list.length; i++) {
-    const duty_object = await User.findOne({
-      attributes: ['usr_pid', 'usr_name'],
-      where: { 'usr_pid': data_list[i]['usr_pid'] }
-    });
-    data_list[i]['usr_name'] = duty_object.dataValues['usr_name'];
-  }
-
-  console.log("해당 부대 스케줄 목록:", data_list);
-  return res.status(200).json({ result: 'success', data_list });
+  console.log(Object.values(data));
+  return res.status(200).json({ result: 'success', duty: Object.values(data) });
 };
 
-// 본인(병사)의 근무 스케줄 조회(수정중)
+// 본인(병사)의 근무 스케줄 조회
 exports.user_get_duty_schedule = async (req, res) => {
-  const { user_pid, user_division_code } = req.body;
+  const { user_pid } = req.body;
 
   const schedule = await Duty_Schedule.findAll({
     where: { usr_pid: user_pid },
