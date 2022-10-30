@@ -32,6 +32,7 @@ exports.register = async (req, res) => {
       usr_division: user_division,
       usr_division_code: user_division_code,
       usr_class: user_class,
+      usr_point: 0,
       classification: checked ? 0 : 1,
       // 가입할 때 이미 존재하는 id인지, 그리고 관리자 권한을 체크 했는지 확인되면 관리자로 가입 요청
       // (추후 DB에서 검토 후 classification: true로 바꾸면 관리자로 로그인)
@@ -73,6 +74,7 @@ exports.login = (req, res, next) => {
       user_division_code: req.user.usr_division_code, // user_division_code 를 통해 특정 부대의 페이지에만 접근 가능하도록 설정
       user_class: req.user.usr_class,
       user_discharge_date: req.user.usr_discharge_date,
+      usr_point: 0,
       classification: req.user.classification, // 1이면 Front 라우터에서 admin 페이지로, 2이면 user main 페이지로, null이면 로그인 못하게! => token 비교가 더 나음.
     },
     token,
