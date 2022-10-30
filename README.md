@@ -108,13 +108,15 @@ Milty는 별도의 설정이나 메뉴얼 없이도 직관적인 UI를 통해 �
 
 
 ## :raising_hand:팀 정보 (Team Information)
-* 김재준 (jkimkr08@gmail.com), Github Id: jaeiko
-* 권종원 (ty_ty123@naver.com), Github Id: kwonjongwon123
-* 이순형 (tnsgud9@naver.com), Github Id: tnsgud9
-* 한동현 (hando1220@naver.com), Github Id: asitisdev
-* 하승종 (hippo0419@daum.net), Github Id: hippo0419
-* 김민철 (kminchul95@naver.com), Github Id: nyan101
 
+|이름|소속|역할|이메일|Github
+|-------|---|---|---|----|
+|김재준|동원전력사령부 55동원지원단|팀장/Backend|jkimkr08@gmail.com|jaeiko
+|이순형|국군지휘통신사령부 사이버네트워크작전센터|Backend/DB|tnsgud9@naver.com|tnsgud9
+|권종원|제2신속대응사단|Backend/DB|ty_ty123@naver.com|tnsgud9
+|한동현|동원전력사령부 55동원지원단|Frontend|hando1220@naver.com|asitisdev
+|하승종|동원전력사령부 55동원지원단|Frontend|hippo0419@daum.net|hippo0419
+|김민철|동원전력사령부 55동원지원단|Full-stack/디버깅/문서화 작업|kminchul95@naver.com|nyan101
 
 # 저작권 및 사용권 정보 (Copyleft / End User License)
 
