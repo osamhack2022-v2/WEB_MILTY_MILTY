@@ -72,24 +72,33 @@
 * 권장: Google Chrome 버젼 77 이상
 
 
-# 기술 스택 (Technique Used)
-<h3>Server(back-end)</h3>
+## 기술 스택 & 오픈 소스 (Technique Used)
+<h3>Back-End</h3>
 
-* JavaScript(TypeScript), Node.js
-* Express 프레임워크
-* Maria DB(Sequelize orm 사용하여 Node.js와 Express랑 연동할 예정)
- 
+* JavaScript
+* Node.js
+* Express.js
+* Passport.js
+
 <h3>Front-end</h3>
 
-* Html, Css, JavaScript(TypeScript)
+* Html
+* Css
+* JavaScript
+* Node.js
 * React.js
 * React UI Library
+
+<h3>DataBase</h3>
+
+* Maria DB
+* Sequelize orm
 
 
 # 설치 안내 (Installation Process)
 ```
 $ 1. git clone https://github.com/osamhack2022-v2/WEB_MILTY_MILTY.git
-$ 2. WEB(FE)에서 yarn install하고 yarn build / WEB(BE) 경로에서 npm install
+$ 2. WEB(FE) 경로에서 yarn install하고 yarn build / WEB(BE) 경로에서 npm install
 $ 3. WEB(BE) 경로에서 npm start로 실행
 ```
 
