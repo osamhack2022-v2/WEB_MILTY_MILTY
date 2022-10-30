@@ -112,16 +112,17 @@ Milty는 별도의 설정이나 메뉴얼 없이도 직관적인 UI를 통해 �
 
 ### 기능 API 목록
 SwaggerUI를 적용하여 API 목록을 확인할 수 있습니다.
+
 <table>
   <tr>
-    <td><img src="https://user-images.githubusercontent.com/13505734/198888214-bc5d10ef-566a-4413-8fd2-4f7f2e49c5e3.png" width = 400px height = 270px ></td>
-    <td><img src="https://user-images.githubusercontent.com/13505734/198888259-c0a5fa67-1b9f-4f63-a0bb-e8dc2cdd1503.png" width = 400px height = 270px></td>
+    <td><img src="https://user-images.githubusercontent.com/13505734/198888214-bc5d10ef-566a-4413-8fd2-4f7f2e49c5e3.png" width = 400px height = 300px ></td>
+    <td><img src="https://user-images.githubusercontent.com/13505734/198888259-c0a5fa67-1b9f-4f63-a0bb-e8dc2cdd1503.png" width = 400px height = 300px></td>
    </tr> 
    <tr>
       <td align="center">전체 API 목록</td>
       <td align="center">개별 API 상세정보</td>
   </tr>
-
+</table>
 
 ## :raising_hand:팀 정보 (Team Information)
 
