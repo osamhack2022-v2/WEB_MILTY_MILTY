@@ -232,7 +232,10 @@ exports.get_duty_schedule = async (req, res) => {
 
     let data = {};
     await Promise.all(
-      schedule.map(async ({ duty_schedule_pid, timeslot_pid }) => {
+      schedule.map(async ({ duty_schedule_pid, timeslot_pid, usr_pid }) => {
+        const { usr_class, usr_name } = await User.findOne({
+          where: { usr_pid },
+        });
         const { duty_pid, timeslot_start, timeslot_end } =
           await Timeslot.findOne({ where: { timeslot_pid } });
         const { duty_name } = await Duty.findOne({ where: duty_pid });
@@ -247,6 +250,7 @@ exports.get_duty_schedule = async (req, res) => {
           pid: duty_schedule_pid,
           start_time: timeslot_start,
           end_time: timeslot_end,
+          user_name: `${usr_class} ${usr_name}`,
         });
       }),
     );
