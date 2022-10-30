@@ -196,27 +196,3 @@ exports.admin_get_duty_request = async (req, res) => {
     });
   }
 };
-
-//같은 부대 유저 정보 받기
-exports.get_user_list = async function (req, res) {
-  const { user_division_code } = req.body;
-
-  const user_list = await Users.findAll({
-    attributes: ['usr_pid', 'usr_name', 'usr_class', 'usr_discharge_date'],
-    where: { usr_division_code: user_division_code },
-  });
-
-  console.log('user_list  내용 : ', user_list);
-
-  res.status(200).json({
-    result: 'success',
-    users: user_list.map(
-      ({ usr_pid, usr_name, usr_class, usr_discharge_date }) => ({
-        user_pid: usr_pid,
-        user_name: usr_name,
-        user_class: usr_class,
-        user_discharge_date: usr_discharge_date,
-      }),
-    ),
-  });
-};

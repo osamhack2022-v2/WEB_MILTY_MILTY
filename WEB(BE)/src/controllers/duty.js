@@ -9,24 +9,24 @@ const Exempt = require('../models/exempt.model');
 const { Op } = require('sequelize');
 
 // 근무 종류 생성(구현 완료)
-exports.set_duty = async function (req, res) {
+exports.set_duty = async (req, res) => {
   const {
     usr_division_code, // 부대 코드
     duty_name, // 근무 종류
     duty_people_num, // 시간대별 근무 투입 인원 수
   } = req.body;
 
-  Duty.create({
+  await Duty.create({
     usr_division_code, // Front에 있는 현재 로그인된 부대 관리자의 부대코드를 활용하여 근무 부대코드에 저장
     duty_name,
     duty_people_num,
-  }).then(() => {
-    return res.status(200).json({ result: 'success' });
   });
+
+  res.status(200).json({ result: 'success' });
 };
 
 // 근무 종류 조회(구현 완료)
-exports.get_duty = async function (req, res) {
+exports.get_duty = async (req, res) => {
   const { usr_division_code } = req.body;
   const data = await Duty.findAll({
     where: { usr_division_code },
@@ -65,29 +65,24 @@ exports.set_duty_timeslot = async function (req, res) {
 };
 
 // 경작서 틀 조회(구현 완료)
-exports.get_duty_timeslot = async function (req, res) {
+exports.get_duty_timeslot = async (req, res) => {
   const { duty_pid } = req.body;
   const data = await Timeslot.findAll({ where: { duty_pid } });
-  const duty_name = await Duty.findOne({
+  const duty = await Duty.findOne({
     attributes: ['duty_name'],
-    where: {
-      duty_pid,
-    },
+    where: { duty_pid },
   });
-  console.log('경작서 틀 조회 : ', data, '근무 이름 : ', duty_name.duty_name);
+  console.log('경작서 틀 조회 : ', data, '근무 이름 : ', duty.duty_name);
   return res.status(200).json({
     result: 'success',
     timeslot: data,
-    duty_name: duty_name.duty_name,
+    duty_name: duty.duty_name,
   });
 };
 
 // 해당 날짜의 경작서(인원 배치)생성(민철님 작업)
-exports.set_duty_schedule = async function (req, res) {
-  const {
-    user_division_code, // 근무 PID
-    date,
-  } = req.body;
+exports.set_duty_schedule = async (req, res) => {
+  const { user_division_code, date } = req.body;
 
   // ==== Region : 해당 부대의 duty_pid 리스트 불러오기 ====
   const duty_pid_objects = await Duty.findAll({
@@ -98,7 +93,6 @@ exports.set_duty_schedule = async function (req, res) {
   let duty_pid_list = [];
   for (const d of duty_pid_objects)
     duty_pid_list.push(d.dataValues['duty_pid']);
-
 
   console.log('##### duty pid list #####\n', duty_pid_list);
 
@@ -112,8 +106,8 @@ exports.set_duty_schedule = async function (req, res) {
 
     for (const d of timeslots_objects)
       timeslot_list.push({
-        'timeslot_pid': d.dataValues['timeslot_pid'],
-        'timeslot_point': d.dataValues['timeslot_point']
+        timeslot_pid: d.dataValues['timeslot_pid'],
+        timeslot_point: d.dataValues['timeslot_point'],
       });
   }
 
@@ -151,11 +145,10 @@ exports.set_duty_schedule = async function (req, res) {
   // SQL 문에서 열외자를 거르는 대신, 미리 다 불러놓고 JS단에서 열외자 리스트에 있는 경우를 제외했습니다.
   let usr_list = [];
   for (const d of usrs_objects) {
-    if (current_excluder_list.indexOf(d.dataValues['usr_pid']) != -1)
-      continue;
+    if (current_excluder_list.indexOf(d.dataValues['usr_pid']) != -1) continue;
     usr_list.push({
-      'usr_pid': d.dataValues['usr_pid'],
-      'usr_point': d.dataValues['usr_point']
+      usr_pid: d.dataValues['usr_pid'],
+      usr_point: d.dataValues['usr_point'],
     });
   }
   console.log('근무자 리스트 : ', usr_list);
@@ -178,7 +171,12 @@ exports.set_duty_schedule = async function (req, res) {
 
   for (let i = 0; i < timeslot_list.length; i++) {
     // timeslot_list[i]와 usr_list[i]를 매칭
-    console.log('matching ' + usr_list[i]['usr_pid'] + ' -- ' + timeslot_list[i]['timeslot_pid']);
+    console.log(
+      'matching ' +
+        usr_list[i]['usr_pid'] +
+        ' -- ' +
+        timeslot_list[i]['timeslot_pid'],
+    );
     Duty_Schedule.create({
       duty_schedule_division_code: user_division_code,
       duty_schedule_date: date,
@@ -191,15 +189,17 @@ exports.set_duty_schedule = async function (req, res) {
     // UPDATE User
     //   SET usr_point = usr_point + timeslot_list[i]['timeslot_point']
     //   WHERE usr_pid = usr_list[i]['usr_pid']
-    User.increment({ 'usr_point': timeslot_list[i]['timeslot_point'] },
-      { where: { 'usr_pid': usr_list[i]['usr_pid'] } });
+    User.increment(
+      { usr_point: timeslot_list[i]['timeslot_point'] },
+      { where: { usr_pid: usr_list[i]['usr_pid'] } },
+    );
   }
 
   return res.status(200).json({ result: 'success' });
 };
 
 // 해당 날짜의 근무표 조회(민철님 작업)
-exports.get_duty_schedule = async function (req, res) {
+exports.get_duty_schedule = async (req, res) => {
   const {
     duty_pid,
     usr_division_code, // 근무 PID
@@ -207,13 +207,8 @@ exports.get_duty_schedule = async function (req, res) {
   } = req.body;
 };
 
-// 유저 근무 대시보드 조회(수정중)
-exports.get_user_duty_on_dashboard = async function (req, res) {
-  const { user_pid } = req.body;
-};
-
 // 본인(병사)의 근무 스케줄 조회(수정중)
-exports.get_user_duty_schedule = async function (req, res) {
+exports.user_get_duty_schedule = async (req, res) => {
   const { user_pid, user_division_code } = req.body;
 
   const user_duty_data = Duty_Schedule.findAll({
@@ -225,4 +220,9 @@ exports.get_user_duty_schedule = async function (req, res) {
   // 여기서 타임슬롯 PID를 불러와야 한다.
 
   res.status(200).json({ result: 'success', user_duty_data });
+};
+
+// 유저 근무 대시보드 조회(수정중)
+exports.get_user_duty_on_dashboard = async (req, res) => {
+  const { user_pid } = req.body;
 };
