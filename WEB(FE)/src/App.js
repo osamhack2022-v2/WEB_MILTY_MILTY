@@ -39,11 +39,14 @@ const App = () => {
       />
       <Route
         index
-        element={ // index에서 user 비교 후 해당된 경로로 이동. !! eslint 문법 어긋난 수정이 필요한 코드
-          // eslint-disable-next-line no-nested-ternary
-          user === null ? <Navigate to="/login" /> :
-            user.classification === ADMIN
-              ? <Navigate to="/admin" replace /> : <Navigate to="/soldier" replace />
+        element={
+          user === null ? (
+            <Navigate to="/login" />
+          ) : user.classification === ADMIN ? (
+            <Navigate to="/admin" replace />
+          ) : (
+            <Navigate to="/soldier" replace />
+          )
         }
       />
     </Routes>
