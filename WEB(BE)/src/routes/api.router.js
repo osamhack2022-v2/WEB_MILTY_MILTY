@@ -18,6 +18,7 @@ const {
   set_duty_schedule,
   get_duty_schedule,
   user_get_duty_schedule,
+  check_duty_schedule,
   get_user_duty_on_dashboard,
 } = require('../controllers/duty');
 const { get_check_count } = require('../controllers/check_count');
@@ -58,6 +59,8 @@ router.post('/get-duty-timeslot', get_duty_timeslot); // 근무 시간대 조회
 router.post('/set-duty-schedule', set_duty_schedule); // 해당 날짜의 근무표 생성
 router.post('/get-duty-schedule', get_duty_schedule); // 해당 날짜의 전체 근무 조회
 router.post('/user/get-duty-schedule', user_get_duty_schedule); // 사용자의 근무 조회
+
+router.post('/check-duty-schedule', check_duty_schedule); // 경작서 생성 여부 조회
 
 router.post('/get-check-count', get_check_count); // 근무 횟수 조회
 // #### End region ####

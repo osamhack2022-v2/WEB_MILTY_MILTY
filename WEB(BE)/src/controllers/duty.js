@@ -293,6 +293,30 @@ exports.user_get_duty_schedule = async (req, res) => {
   }
 };
 
+// 근무 존재 여부 확인
+exports.check_duty_schedule = async (req, res) => {
+  const { division_code } = req.body;
+
+  try {
+    const schedule = await Duty_Schedule.findAll({
+      where: { duty_schedule_division_code: division_code },
+    });
+
+    let data = {};
+    await Promise.all(
+      schedule.map(async ({ duty_schedule_date }) => {
+        data[duty_schedule_date] = true;
+      }),
+    );
+
+    console.log(Object.keys(data));
+    res.status(200).json({ result: 'success', date: Object.keys(data) });
+  } catch (err) {
+    console.warn(err);
+    res.status(200).json({ result: 'fail' });
+  }
+};
+
 // 유저 근무 대시보드 조회(수정중)
 exports.get_user_duty_on_dashboard = async (req, res) => {
   const { user_pid } = req.body;
