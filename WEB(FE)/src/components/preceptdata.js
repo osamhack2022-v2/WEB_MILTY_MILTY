@@ -34,22 +34,25 @@ export const topTabledata = [
 export const middleTableColumns = [
   {
     title: "시간",
-    dataIndex: "peridd",
-    key: "period",
+    dataIndex: "time",
+    key: "time",
     align: "center",
+    render: (_, { time_start, time_end }) => {
+      return <span>{time_start} - {time_end}</span>;
+    }
   },
   {
-    title: "사수",
-    dataIndex: "mentor",
-    key: "mentor",
+    title: "근무자",
+    dataIndex: "user_name",
+    key: "user_name",
     align: "center",
   },
-  {
-    title: "부사수",
-    dataIndex: "mentee",
-    key: "mentee",
-    align: "center",
-  },
+  // {
+  //   title: "부사수",
+  //   dataIndex: "mentee",
+  //   key: "mentee",
+  //   align: "center",
+  // },
 ];
 
 export const middleTabledata = [

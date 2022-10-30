@@ -19,7 +19,7 @@ const CheckDutyPrecept = () => {
           onBack={() => navigate(-1)}
           title={`경계작전명령서 (${params.date})`}
         />
-        <Precept />
+        <Precept date={params.date} />
       </Content>
     </Layout>
   );
