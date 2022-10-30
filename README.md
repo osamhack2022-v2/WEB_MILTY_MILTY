@@ -76,7 +76,7 @@
 * 권장: Google Chrome 버젼 77 이상
 
 
-## :hammer:기술 스택 & 오픈 소스 (Technique Used)
+## :hammer:기술 스택(Technique Used)
 <h3>Back-End</h3>
 
 * JavaScript
