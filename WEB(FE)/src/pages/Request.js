@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Layout, Space, PageHeader, Table, Tag, Button } from "antd";
-import moment from "moment";
 import axios from "axios";
 import { useAuth } from "../hooks/useAuth";
-import CustomCalendar from "../components/CustomCalendar";
 
 const { Content } = Layout;
+const statusEnum = {
+  "거부": 0,
+  "대기중": 1,
+  "승인": 2,
+};
 
 const columns = [
   {
@@ -64,25 +67,12 @@ const columns = [
     dataIndex: "reason",
     key: "reason",
   },
-  {
-    title: "승인",
-    dataIndex: "approve",
-    key: "approve",
-    render: () => (
-      <Space>
-        <Button type="primary">승인</Button>
-        <Button type="danger">거부</Button>
-      </Space>
-    ),
-  },
 ];
 
 const Request = () => {
   const { user } = useAuth();
   const [requestList, setRequestList] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-  const [loadingApprove, setLoadingApprove] = useState(false);
-  const [loadingDisapprove, setLoadingDisapprove] = useState(false);
 
   const fetchRequestList = useCallback(() => {
     axios
@@ -124,35 +114,25 @@ const Request = () => {
     fetchRequestList();
   }, []);
 
-  const approve = () => {
-    setLoadingApprove(true);
-    // ajax request after empty completing
-    setTimeout(() => {
-      setSelectedRowKeys([]);
-      setLoadingApprove(false);
-    }, 1000);
+  const onClick = (status) => {
+    selectedRowKeys.forEach((pid) => {
+      axios
+        .post("/api/admin/set-duty-request", {
+          pid: pid,
+          status: statusEnum[status],
+        })
+        .then((response) => {
+          if (response.status === 200 && response.data.result === "success") {
+            fetchRequestList();
+            setSelectedRowKeys([]);
+          }
+        })
+        .catch((error) => {
+          console.warn(error);
+        });
+    });
   };
 
-  const disapprove = () => {
-    setLoadingDisapprove(true);
-    // ajax request after empty completing
-    setTimeout(() => {
-      setSelectedRowKeys([]);
-      setLoadingDisapprove(false);
-    }, 1000);
-  };
-
-  const onSelectChange = (newSelectedRowKeys) => {
-    console.log(
-      `selectedRowKeys changed: (${selectedRowKeys}) => (${newSelectedRowKeys})`
-    );
-    setSelectedRowKeys(newSelectedRowKeys);
-  };
-
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: onSelectChange,
-  };
   const hasSelected = selectedRowKeys.length > 0;
 
   return (
@@ -170,19 +150,17 @@ const Request = () => {
             <Space>
               <Button
                 type="primary"
-                onClick={approve}
+                onClick={() => onClick("승인")}
                 disabled={!hasSelected}
-                loading={loadingApprove}
               >
-                일괄 승인
+                승인
               </Button>
               <Button
                 type="danger"
-                onClick={disapprove}
+                onClick={() => onClick("거부")}
                 disabled={!hasSelected}
-                loading={loadingDisapprove}
               >
-                일괄 거부
+                거부
               </Button>
               <span style={{ marginLeft: 8 }}>
                 {hasSelected ? `${selectedRowKeys.length}명 선택됨` : ""}
@@ -190,7 +168,10 @@ const Request = () => {
             </Space>
           </div>
           <Table
-            rowSelection={rowSelection}
+            rowSelection={{
+              selectedRowKeys,
+              onChange: (newSelectedRowKeys) => setSelectedRowKeys(newSelectedRowKeys)
+            }}
             columns={columns}
             dataSource={requestList}
             scroll={{ x: 768 }}
