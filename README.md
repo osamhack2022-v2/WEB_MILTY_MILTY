@@ -79,31 +79,46 @@
 ## :hammer:기술 스택(Technique Used)
 <h3>Back-End</h3>
 
-* JavaScript
-* Node.js
-* Express.js
-* Passport.js
+* ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E.svg?&style=for-the-badge&logo=JavaScript&logoColor=white)
+* ![Node.js](https://img.shields.io/badge/Node.js-339933.svg?&style=for-the-badge&logo=Node.js&logoColor=white)
+* ![Express](https://img.shields.io/badge/Express-000000.svg?&style=for-the-badge&logo=Express&logoColor=white)
+* ![Passport](https://img.shields.io/badge/Passport-34E27A.svg?&style=for-the-badge&logo=Passport&logoColor=white)
 
 <h3>Front-end</h3>
 
-* Html
-* Css
-* JavaScript
-* Node.js
-* React.js
-* React UI Library
+* ![HTML5](https://img.shields.io/badge/HTML5-E34F26.svg?&style=for-the-badge&logo=HTML5&logoColor=white)
+* ![CSS3](https://img.shields.io/badge/CSS3-1572B6.svg?&style=for-the-badge&logo=CSS3&logoColor=white)
+* ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E.svg?&style=for-the-badge&logo=JavaScript&logoColor=white)
+* ![Node.js](https://img.shields.io/badge/Node.js-339933.svg?&style=for-the-badge&logo=Node.js&logoColor=white)
+* ![React](https://img.shields.io/badge/React-61DAFB.svg?&style=for-the-badge&logo=React&logoColor=white)
+* ![Ant Design](https://img.shields.io/badge/AntDesign-0170FE.svg?&style=for-the-badge&logo=AntDesign&logoColor=white)
 
 <h3>DataBase</h3>
 
-* Maria DB
-* Sequelize orm
+* ![MariaDB](https://img.shields.io/badge/MariaDB-003545.svg?&style=for-the-badge&logo=MariaDB&logoColor=white)
+* ![Sequelize](https://img.shields.io/badge/Sequelize-52B0E7.svg?&style=for-the-badge&logo=Sequelize&logoColor=white)
 
 
 ## :wrench:설치 안내 (Installation Process)
+1. Repository 저장
 ```
-$ 1. git clone https://github.com/osamhack2022-v2/WEB_MILTY_MILTY.git
-$ 2. WEB(FE) 경로에서 yarn install하고 yarn build / WEB(BE) 경로에서 npm install
-$ 3. WEB(BE) 경로에서 npm start로 실행
+$ git clone https://github.com/osamhack2022-v2/WEB_MILTY_MILTY.git
+```
+
+2. WEB(FE) 경로에서 yarn install하고 yarn build / WEB(BE) 경로에서 npm install
+```
+$ # /workspaces/WEB_MILTY_MILTY/WEB(FE)
+$ yarn install
+$ yarn build
+
+$ # /workspaces/WEB_MILTY_MILTY/WEB(BE)
+$ npm install(or npm update)
+```
+
+3. WEB(BE) 경로에서 npm start로 실행
+```
+$ # /workspaces/WEB_MILTY_MILTY/WEB(BE)
+$ npm start
 ```
 
 
