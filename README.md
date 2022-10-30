@@ -4,7 +4,67 @@
 
 
 # 프로젝트 소개
+## MILTY 기획의도
+* 손쉬운 근무자 현황 관리를 위한 기능 구현
+* 공정한 근무 분배를 위한 경작서 자동제작 알고리즘 설계
+* 부대별 다양한 근무유형을 반영한 플랫폼 제작
 
+## 근무자 주요 기능
+
+<table>
+  <tr>
+    <td><img src="https://user-images.githubusercontent.com/13505734/198883106-ceee89c2-85ae-4fa6-bc08-b072544d541a.png"  width = 400px height = 270px ></td>
+    <td><img src="https://user-images.githubusercontent.com/13505734/198883271-7147a1e0-4218-450a-87e7-e5e7d6a73413.png" width = 400px height = 270px></td>
+   </tr> 
+   <tr>
+      <td align="center">월간 근무현황 확인</td>
+      <td align="center">근무 변경요청</td>
+  </tr>
+</table>
+<table>
+  <tr>
+    <td><img src="https://user-images.githubusercontent.com/13505734/198883553-d52852ba-8a3e-43fc-83a0-035224959748.png" width = 400px height = 270px ></td>
+    <td><img src="https://user-images.githubusercontent.com/13505734/198883624-00198da0-e3ac-4583-be75-5b754e16dcbb.png" width = 400px height = 270px></td>
+   </tr> 
+   <tr>
+      <td align="center">근무 통계 확인</td>
+      <td align="center">건의사항 작성</td>
+  </tr>
+</table>
+
+
+## 관리자 주요 기능
+
+<table>
+  <tr>
+    <td><img src="https://user-images.githubusercontent.com/13505734/198883965-c8055d7d-a3bc-4c2a-9978-6e1ebfb27de1.png"  width = 400px height = 270px ></td>
+    <td><img src="https://user-images.githubusercontent.com/13505734/198883978-e8e747f8-e3c2-42ff-96bc-85c128686312.png" width = 400px height = 270px></td>
+   </tr> 
+   <tr>
+      <td align="center">월간 경작서 자동생성</td>
+      <td align="center">일일 경작서 확인</td>
+  </tr>
+</table>
+<table>
+  <tr>
+    <td><img src="https://user-images.githubusercontent.com/13505734/198884007-879573ad-ba23-4c1e-a033-d4d2c0f5ec25.png" width = 400px height = 270px ></td>
+    <td><img src="https://user-images.githubusercontent.com/13505734/198884029-e74f59c4-184c-40fc-8973-4965484621d0.png" width = 400px height = 270px></td>
+   </tr> 
+   <tr>
+      <td align="center">근무자 현황 관리</td>
+      <td align="center">열외자 현황 관리</td>
+  </tr>
+</table>
+<table>
+  <tr>
+    <td><img src="https://user-images.githubusercontent.com/13505734/198883928-298b4cc0-38ca-411e-af09-3725ffcec86d.png" width = 400px height = 270px ></td>
+    <td><img src="https://user-images.githubusercontent.com/13505734/198883871-be0d8f77-f938-4773-a80e-4d2bef17c439.png" width = 400px height = 270px></td>
+   </tr> 
+   <tr>
+      <td align="center">근무 변경요청 승인/거부</td>
+      <td align="center">건의사항 처리</td>
+  </tr>
+</table>
 
 # 컴퓨터 구성 / 필수 조건 안내 (prerequisites)
 
