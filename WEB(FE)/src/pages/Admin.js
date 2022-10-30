@@ -10,6 +10,7 @@ import {
   CommentOutlined,
   LogoutOutlined,
 } from "@ant-design/icons";
+import Main from "./Main";
 import WriteDuty from "./WriteDuty";
 import CheckDutyPrecept from "./CheckDutyPrecept";
 import Exemptlist from "./Exemptlist";
@@ -23,7 +24,7 @@ const { Sider } = Layout;
 
 const Admin = () => {
   const navigate = useNavigate();
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
@@ -104,6 +105,7 @@ const Admin = () => {
           />
         </Sider>
         <Routes>
+          <Route index element={<Main user={user} />} />
           <Route path="/write-duty" element={<WriteDuty />} />
           <Route path="/check-duty/:date" element={<CheckDutyPrecept />} />
           <Route path="/exemptlist" element={<Exemptlist />} />
