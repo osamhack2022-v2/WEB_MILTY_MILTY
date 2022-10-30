@@ -118,9 +118,9 @@ Milty는 별도의 설정이나 메뉴얼 없이도 직관적인 UI를 통해 �
 |김재준|동원전력사령부 55동원지원단|팀장/Backend|jkimkr08@gmail.com|jaeiko
 |이순형|국군지휘통신사령부 사이버네트워크작전센터|Backend/DB|tnsgud9@naver.com|tnsgud9
 |권종원|제2신속대응사단|Backend/DB|ty_ty123@naver.com|tnsgud9
-|한동현|동원전력사령부 55동원지원단|Frontend|hando1220@naver.com|asitisdev
-|하승종|동원전력사령부 55동원지원단|Frontend|hippo0419@daum.net|hippo0419
-|김민철|동원전력사령부 55동원지원단|Full-stack/디버깅/문서화 작업|kminchul95@naver.com|nyan101
+|한동현|72 정보통신대대|Frontend|hando1220@naver.com|asitisdev
+|하승종|수도기계화보병사단 공병대대|Frontend|hippo0419@daum.net|hippo0419
+|김민철|대외기관 대통령경호처|Full-stack/디버깅/문서화 작업|kminchul95@naver.com|nyan101
 
 # 저작권 및 사용권 정보 (Copyleft / End User License)
 
