@@ -19,12 +19,12 @@ module.exports = class Duty_Schedule extends Sequelize.Model {
         usr_pid: {
           type: Sequelize.STRING(100),
           allowNull: false,
-          unique: true,
+          unique: false,
         },
         timeslot_pid: {
           type: Sequelize.INTEGER,
           allowNull: false,
-          unique: true,
+          unique: false,
         },
         duty_schedule_date: {
           type: Sequelize.DATE,

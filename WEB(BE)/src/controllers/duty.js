@@ -174,28 +174,28 @@ exports.set_duty_schedule = async function (req, res) {
     return a['timeslot_point'] < b['timeslot_point'];
   });
 
-  try {
-    for (let i = 0; i < timeslot_list.length; i++) {
-      // timeslot_list[i]와 usr_list[i]를 매칭
-      console.log('matching ' + usr_list[i]['usr_pid'] + ' -- ' + timeslot_list[i]['timeslot_pid']);
-      Duty_Schedule.create({
-        duty_schedule_division_code: user_division_code,
-        duty_schedule_date: date,
-        timeslot_pid: timeslot_list[i]['timeslot_pid'],
-        usr_pid: usr_list[i]['usr_pid'],
-      });
-      // usr_list[i]['usr_pid']를 가진 user의 usr_point에 timeslot_list[i]['timeslot_point'] 가산
-      // UPDATE User
-      //   SET usr_point = usr_point + timeslot_list[i]['timeslot_point']
-      //   WHERE usr_pid = usr_list[i]['usr_pid']
-      User.increment({ 'usr_point': timeslot_list[i]['timeslot_point'] },
-        { where: { 'usr_pid': usr_list[i]['usr_pid'] } });
-    }
+  console.log('정렬된 timeslot 리스트:', timeslot_list);
 
-    return res.status(200).json({ result: 'success' });
-  } catch (err) {
-    console.log(err);
+  for (let i = 0; i < timeslot_list.length; i++) {
+    // timeslot_list[i]와 usr_list[i]를 매칭
+    console.log('matching ' + usr_list[i]['usr_pid'] + ' -- ' + timeslot_list[i]['timeslot_pid']);
+    Duty_Schedule.create({
+      duty_schedule_division_code: user_division_code,
+      duty_schedule_date: date,
+      timeslot_pid: timeslot_list[i]['timeslot_pid'],
+      usr_pid: usr_list[i]['usr_pid'],
+    });
+
+    console.log('duty_schedule 모델 데이터:', await Duty_Schedule.findAll());
+    // usr_list[i]['usr_pid']를 가진 user의 usr_point에 timeslot_list[i]['timeslot_point'] 가산
+    // UPDATE User
+    //   SET usr_point = usr_point + timeslot_list[i]['timeslot_point']
+    //   WHERE usr_pid = usr_list[i]['usr_pid']
+    User.increment({ 'usr_point': timeslot_list[i]['timeslot_point'] },
+      { where: { 'usr_pid': usr_list[i]['usr_pid'] } });
   }
+
+  return res.status(200).json({ result: 'success' });
 };
 
 // 해당 날짜의 근무표 조회(민철님 작업)
