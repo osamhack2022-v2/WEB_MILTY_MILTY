@@ -263,15 +263,29 @@ exports.get_duty_schedule = async (req, res) => {
 exports.user_get_duty_schedule = async (req, res) => {
   const { user_pid, user_division_code } = req.body;
 
-  const user_duty_data = Duty_Schedule.findAll({
-    where: {
-      usr_pid: user_pid,
-      duty_schedule_division_code: user_division_code,
-    },
+  const schedule = await Duty_Schedule.findAll({
+    where: { usr_pid: user_pid },
   });
-  // 여기서 타임슬롯 PID를 불러와야 한다.
 
-  res.status(200).json({ result: 'success', user_duty_data });
+  const data = await Promise.all(
+    schedule.map(
+      async ({ duty_schedule_pid, duty_schedule_date, timeslot_pid }) => {
+        const { duty_pid, timeslot_start, timeslot_end } =
+          await Timeslot.findOne({ where: { timeslot_pid } });
+        const { duty_name } = await Duty.findOne({ where: duty_pid });
+
+        return {
+          pid: duty_schedule_pid,
+          duty_name,
+          date: duty_schedule_date,
+          start_time: timeslot_start,
+          end_time: timeslot_end,
+        };
+      },
+    ),
+  );
+
+  res.status(200).json({ result: 'success', schedule: data });
 };
 
 // 유저 근무 대시보드 조회(수정중)
