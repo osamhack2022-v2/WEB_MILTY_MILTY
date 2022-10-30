@@ -7,37 +7,6 @@ import CustomCalendar from "../components/CustomCalendar";
 
 const { Content } = Layout;
 
-const schedule = [
-  {
-    pid: 1,
-    date: "2022-10-08",
-    duty_name: "무기고",
-    start_time: "08:00",
-    end_time: "12:00",
-  },
-  {
-    pid: 2,
-    date: "2022-10-15",
-    duty_name: "위병소",
-    start_time: "12:00",
-    end_time: "16:00",
-  },
-  {
-    pid: 3,
-    date: "2022-10-15",
-    duty_name: "CCTV",
-    start_time: "20:00",
-    end_time: "22:00",
-  },
-  {
-    pid: 4,
-    date: "2022-10-17",
-    duty_name: "CCTV",
-    start_time: "20:00",
-    end_time: "22:00",
-  },
-];
-
 const color = (name) => {
   switch (name) {
     case "CCTV":
@@ -58,7 +27,7 @@ const color = (name) => {
 const CheckDuty = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  // const [schedule, setSchedule] = useState([]);
+  const [schedule, setSchedule] = useState([]);
 
   const fetchUserDutySchedule = useCallback(() => {
     axios
@@ -76,7 +45,7 @@ const CheckDuty = () => {
   }, [user]);
 
   useEffect(() => {
-    //   fetchUserDutySchedule();
+    fetchUserDutySchedule();
   }, []);
 
   const dateCellRender = useCallback(
