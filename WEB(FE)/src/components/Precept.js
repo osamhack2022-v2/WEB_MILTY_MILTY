@@ -23,7 +23,7 @@ const columns = [
 ];
 
 
-const Precept = () => {
+const Precept = (props) => {
   const { user } = useAuth();
   const params = useParams();
   const [duty, setDuty] = useState([]);
@@ -32,7 +32,7 @@ const Precept = () => {
     axios
       .post("/api/get-duty-schedule", {
         user_division_code: user.user_division_code,
-        date: params.date,
+        date: (params.date === undefined ? props.date : params.date),
       })
       .then((response) => {
         console.log(response);
@@ -58,6 +58,11 @@ const Precept = () => {
       }}
     >
       <Row justify="center" gutter={[16, 16]}>
+        {(Object.entries(duty).length === 0) ?
+          <Typography.Title level={3}>
+            아직 명령서가 작성되지 않았습니다.
+          </Typography.Title>
+          : <div></div>}
         {duty.map(({ duty_pid, duty_name, schedule }) => (
           <Col xs={24} xl={11}>
             <Typography.Title level={3}>{duty_name}</Typography.Title>
