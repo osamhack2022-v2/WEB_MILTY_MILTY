@@ -4,6 +4,10 @@
 
 
 # :book:프로젝트 소개
+[![Video Label](http://img.youtube.com/vi/eQTx6FcuDvU/0.jpg)](https://youtu.be/eQTx6FcuDvU) 
+
+위 사진을 클릭하면 소개 영상을 볼 수 있습니다.
+
 ## :bookmark_tabs:MILTY 기획의도
 * 손쉬운 장병 근무 관리를 위한 주요 기능 구현
 * 공정한 근무 분배를 위한 경작서 자동제작 알고리즘 설계
