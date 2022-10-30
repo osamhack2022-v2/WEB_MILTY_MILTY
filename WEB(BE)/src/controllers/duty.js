@@ -206,75 +206,84 @@ exports.set_duty_schedule = async (req, res) => {
 
 // 해당 날짜의 근무표 조회
 exports.get_duty_schedule = async (req, res) => {
-  const { usr_division_code, date } = req.body;
+  const { user_division_code, date } = req.body;
 
-  const schedule = await Duty_Schedule.findAll({
-    attributes: ['usr_pid', 'timeslot_pid'],
-    where: {
-      [Op.and]: [
-        { duty_schedule_division_code: usr_division_code },
-        sequelize.where(
-          sequelize.fn('date', sequelize.col('duty_schedule_date')),
-          '=',
-          date,
-        ),
-      ],
-    },
-  });
+  try {
+    const schedule = await Duty_Schedule.findAll({
+      attributes: ['usr_pid', 'timeslot_pid'],
+      where: {
+        [Op.and]: [
+          { duty_schedule_division_code: user_division_code },
+          sequelize.where(
+            sequelize.fn('date', sequelize.col('duty_schedule_date')),
+            '=',
+            date,
+          ),
+        ],
+      },
+    });
 
-  let data = {};
-  await Promise.all(
-    schedule.map(async ({ duty_schedule_pid, timeslot_pid }) => {
-      const { duty_pid, timeslot_start, timeslot_end } = await Timeslot.findOne(
-        { where: { timeslot_pid } },
-      );
-      const { duty_name } = await Duty.findOne({ where: duty_pid });
+    let data = {};
+    await Promise.all(
+      schedule.map(async ({ duty_schedule_pid, timeslot_pid }) => {
+        const { duty_pid, timeslot_start, timeslot_end } =
+          await Timeslot.findOne({ where: { timeslot_pid } });
+        const { duty_name } = await Duty.findOne({ where: duty_pid });
 
-      if (data[duty_pid] === undefined) {
-        data[duty_pid] = {};
-        data[duty_pid].duty_pid = duty_pid;
-        data[duty_pid].duty_name = duty_name;
-        data[duty_pid].schedule = [];
-      }
-      data[duty_pid].schedule.push({
-        pid: duty_schedule_pid,
-        start_time: timeslot_start,
-        end_time: timeslot_end,
-      });
-    }),
-  );
+        if (data[duty_pid] === undefined) {
+          data[duty_pid] = {};
+          data[duty_pid].duty_pid = duty_pid;
+          data[duty_pid].duty_name = duty_name;
+          data[duty_pid].schedule = [];
+        }
+        data[duty_pid].schedule.push({
+          pid: duty_schedule_pid,
+          start_time: timeslot_start,
+          end_time: timeslot_end,
+        });
+      }),
+    );
 
-  console.log(Object.values(data));
-  return res.status(200).json({ result: 'success', duty: Object.values(data) });
+    console.log(Object.values(data));
+    res.status(200).json({ result: 'success', duty: Object.values(data) });
+  } catch (err) {
+    console.warn(err);
+    res.status(200).json({ result: 'fail' });
+  }
 };
 
 // 본인(병사)의 근무 스케줄 조회
 exports.user_get_duty_schedule = async (req, res) => {
   const { user_pid } = req.body;
 
-  const schedule = await Duty_Schedule.findAll({
-    where: { usr_pid: user_pid },
-  });
+  try {
+    const schedule = await Duty_Schedule.findAll({
+      where: { usr_pid: user_pid },
+    });
 
-  const data = await Promise.all(
-    schedule.map(
-      async ({ duty_schedule_pid, duty_schedule_date, timeslot_pid }) => {
-        const { duty_pid, timeslot_start, timeslot_end } =
-          await Timeslot.findOne({ where: { timeslot_pid } });
-        const { duty_name } = await Duty.findOne({ where: duty_pid });
+    const data = await Promise.all(
+      schedule.map(
+        async ({ duty_schedule_pid, duty_schedule_date, timeslot_pid }) => {
+          const { duty_pid, timeslot_start, timeslot_end } =
+            await Timeslot.findOne({ where: { timeslot_pid } });
+          const { duty_name } = await Duty.findOne({ where: duty_pid });
 
-        return {
-          pid: duty_schedule_pid,
-          duty_name,
-          date: duty_schedule_date,
-          start_time: timeslot_start,
-          end_time: timeslot_end,
-        };
-      },
-    ),
-  );
+          return {
+            pid: duty_schedule_pid,
+            duty_name,
+            date: duty_schedule_date,
+            start_time: timeslot_start,
+            end_time: timeslot_end,
+          };
+        },
+      ),
+    );
 
-  res.status(200).json({ result: 'success', schedule: data });
+    res.status(200).json({ result: 'success', schedule: data });
+  } catch (err) {
+    console.warn(err);
+    res.status(200).json({ result: 'fail' });
+  }
 };
 
 // 유저 근무 대시보드 조회(수정중)
