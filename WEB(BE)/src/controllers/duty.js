@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-restricted-syntax */
 const User = require('../models/users.model');
 const Duty = require('../models/duty.model');
 const Timeslot = require('../models/timeslot.model');
@@ -6,31 +8,29 @@ const Duty_Schedule = require('../models/duty_schedule.model');
 const Exempt = require('../models/exempt.model');
 const { Op } = require('sequelize');
 
-
 // 근무 종류 생성(구현 완료)
 exports.set_duty = async function (req, res) {
-  let {
+  const {
     usr_division_code, // 부대 코드
     duty_name, // 근무 종류
     duty_people_num, // 시간대별 근무 투입 인원 수
   } = req.body;
 
   Duty.create({
-    usr_division_code: usr_division_code,  // Front에 있는 현재 로그인된 부대 관리자의 부대코드를 활용하여 근무 부대코드에 저장
-    duty_name: duty_name,
-    duty_people_num: duty_people_num
-  })
-    .then(() => {
-      return res.status(200).json({ result: 'success' });
-    })
+    usr_division_code, // Front에 있는 현재 로그인된 부대 관리자의 부대코드를 활용하여 근무 부대코드에 저장
+    duty_name,
+    duty_people_num,
+  }).then(() => {
+    return res.status(200).json({ result: 'success' });
+  });
 };
 
 // 근무 종류 조회(구현 완료)
 exports.get_duty = async function (req, res) {
-  let {
-    usr_division_code,
-  } = req.body;
-  const data = await Duty.findAll({ where: { usr_division_code: usr_division_code } });
+  const { usr_division_code } = req.body;
+  const data = await Duty.findAll({
+    where: { usr_division_code },
+  });
 
   console.log('근무 종류 조회 : ', data);
 
@@ -39,15 +39,14 @@ exports.get_duty = async function (req, res) {
 
 // 경작서 틀 생성(구현 완료)
 exports.set_duty_timeslot = async function (req, res) {
-  let {
-    duty_pid,
-    timeslot,
-  } = req.body;
+  const { duty_pid, timeslot } = req.body;
 
   // 기존에 있던 해당 Duty에 대한 Timeslot 삭제
-  const existed_timeslot = await Timeslot.findOne({ where: { duty_pid: duty_pid } });
+  const existed_timeslot = await Timeslot.findOne({
+    where: { duty_pid },
+  });
   if (existed_timeslot) {
-    Timeslot.destroy({ where: { duty_pid: duty_pid } });
+    Timeslot.destroy({ where: { duty_pid } });
   }
 
   console.log(timeslot);
@@ -57,60 +56,72 @@ exports.set_duty_timeslot = async function (req, res) {
     Timeslot.create({
       timeslot_start: t.timeslot_start,
       timeslot_end: t.timeslot_end,
-      duty_pid: duty_pid,
+      duty_pid,
       timeslot_point: t.timeslot_point,
     });
   }
 
   res.status(200).json({ result: 'success' });
-
 };
 
 // 경작서 틀 조회(구현 완료)
 exports.get_duty_timeslot = async function (req, res) {
-  let {
-    duty_pid
-  } = req.body;
-  const data = await Timeslot.findAll({ where: { duty_pid: duty_pid } });
+  const { duty_pid } = req.body;
+  const data = await Timeslot.findAll({ where: { duty_pid } });
   const duty_name = await Duty.findOne({
     attributes: ['duty_name'],
     where: {
-      duty_pid: duty_pid,
-    }
+      duty_pid,
+    },
   });
-  console.log('경작서 틀 조회 : ', data, '근무 이름 : ', duty_name['duty_name']);
-  return res.status(200).json({ result: 'success', timeslot: data, duty_name: duty_name['duty_name'] });
+  console.log('경작서 틀 조회 : ', data, '근무 이름 : ', duty_name.duty_name);
+  return res.status(200).json({
+    result: 'success',
+    timeslot: data,
+    duty_name: duty_name.duty_name,
+  });
 };
 
 // 해당 날짜의 경작서(인원 배치)생성(민철님 작업)
 exports.set_duty_schedule = async function (req, res) {
-  let {
-    user_division_code,           // 근무 PID
+  const {
+    user_division_code, // 근무 PID
     date,
   } = req.body;
 
   // ==== Region : 해당 부대의 duty_pid 리스트 불러오기 ====
-  const duty_pid_list = await Duty.findAll({
-    attributes: ['duty_pid'],
+  const duty_pid_objects = await Duty.findAll({
+    attributes: ['duty_pid', 'usr_division_code'],
     where: { usr_division_code: user_division_code },
   });
-  for (const d of duty_pid_list) {
-    console.log(d.dataValues);
-  }
 
+  let duty_pid_list = [];
+  for (const d of duty_pid_objects)
+    duty_pid_list.push(d.dataValues['duty_pid']);
+
+
+  console.log('##### duty pid list #####\n', duty_pid_list);
 
   // 해당 일자 timeslots 리스트(timeslot_pid, timeslot_point 가 중요)(이 부분 고쳐야 합니다.)
-  let timeslots = await Timeslot.findAll({
-    attributes: ['timeslot_pid', 'timeslot_point'],
-    where: { duty_pid: d.dataValues },
-  });
-  console.log('timeslots 리스트', timeslots);
+  let timeslot_list = [];
+  for (const duty_pid of duty_pid_list) {
+    const timeslots_objects = await Timeslot.findAll({
+      attributes: ['timeslot_pid', 'timeslot_point'],
+      where: { duty_pid: duty_pid },
+    });
+
+    for (const d of timeslots_objects)
+      timeslot_list.push({
+        'timeslot_pid': d.dataValues['timeslot_pid'],
+        'timeslot_point': d.dataValues['timeslot_point']
+      });
+  }
+
+  console.log('timeslots 리스트', timeslot_list);
   // ==== End Region ====
 
-
   // ==== Start Region : 현재 열외자 리스트 생성((이 부분 고쳐야 합니다. 열외자 리스트는 잘 나오는데 기간에 따라서 걸려지지가 않습니다.) ====
-
-  const current_excluder_list = await Exempt.findOne({
+  const current_excluder_objects = await Exempt.findOne({
     attributes: ['usr_pid'],
     where: { exempt_division_code: user_division_code },
     [Op.and]: [
@@ -122,82 +133,96 @@ exports.set_duty_schedule = async function (req, res) {
       },
     ],
   });
+  let current_excluder_list = [];
+  for (const d of current_excluder_objects)
+    current_excluder_list.push(d.dataValues['usr_pid']);
   console.log('현재 열외자 리스트 : ', current_excluder_list);
 
   // 근무자 리스트 생성(후보 user들의 리스트)
-  if (current_excluder_list !== null) {
-    let usrs = await User.findAll({
-      attributes: ['usr_pid'],
-      where: {
-        usr_pid: { [Op.ne]: current_excluder_list.usr_pid }, // Exempt.usr_pid와 같지 않은 유저들 목록 불러서 저장
-        usr_class: {
-          [Op.or]: ['이병', '일병', '상병', '병장'],
-        },
+  const usrs_objects = await User.findAll({
+    attributes: ['usr_pid', 'usr_point'],
+    where: {
+      usr_class: {
+        [Op.or]: ['이병', '일병', '상병', '병장'],
       },
-    })
-  } else if (current_excluder_list == null) {
-    let usrs = await User.findAll({
-      attributes: ['usr_pid'],
-      where: {
-        usr_class: {
-          [Op.or]: ['이병', '일병', '상병', '병장'],
-        },
-      },
-    })
-    console.log('근무자 리스트 : ', usrs);
-  }
+    },
+  });
 
+  // SQL 문에서 열외자를 거르는 대신, 미리 다 불러놓고 JS단에서 열외자 리스트에 있는 경우를 제외했습니다.
+  let usr_list = [];
+  for (const d of usrs_objects) {
+    if (current_excluder_list.indexOf(d.dataValues['usr_pid']) != -1)
+      continue;
+    usr_list.push({
+      'usr_pid': d.dataValues['usr_pid'],
+      'usr_point': d.dataValues['usr_point']
+    });
+  }
+  console.log('근무자 리스트 : ', usr_list);
 
   // ==== End Region ====
 
-  // 저장된 타임슬롯 불러오기
+  // 근무자 - 근무 매칭
+  usr_list.sort((a, b) => {
+    return a['usr_point'] > b['usr_point'];
+  });
+  // 최악의 상황에서도 근무 가능자 수 x 4 >= 필요 근무자라고 가정 (일반적으로는 근무 가능자 >= 필요 근무자)
+  usr_list = usr_list.concat(usr_list.slice());
+  usr_list = usr_list.concat(usr_list.slice());
 
+  timeslot_list.sort((a, b) => {
+    return a['timeslot_point'] < b['timeslot_point'];
+  });
 
-  // 경작서 DB에 저장(이 부분 수정해야 함)
-  Duty_Schedule.create({
-    duty_schedule_division_code: user_division_code,
-    duty_schedule_date: date,
-  })
-    .then(() => {
-      return res.status(200).json('duty schedule setting success');
-    })
-    .catch(err => {
-      throw err;
-    });
+  try {
+    for (let i = 0; i < timeslot_list.length; i++) {
+      // timeslot_list[i]와 usr_list[i]를 매칭
+      console.log('matching ' + usr_list[i]['usr_pid'] + ' -- ' + timeslot_list[i]['timeslot_pid']);
+      Duty_Schedule.create({
+        duty_schedule_division_code: user_division_code,
+        duty_schedule_date: date,
+        timeslot_pid: timeslots_list[i]['timeslot_pid'],
+        usr_pid: usr_list[i]['usr_pid'],
+      });
+      // usr_list[i]['usr_pid']를 가진 user의 usr_point에 timeslot_list[i]['timeslot_point'] 가산
+      // UPDATE User
+      //   SET usr_point = usr_point + timeslot_list[i]['timeslot_point']
+      //   WHERE usr_pid = usr_list[i]['usr_pid']
+      User.increment({ 'usr_point': timeslots_list[i]['timeslot_point'] },
+        { where: { 'usr_pid': usr_list[i]['usr_pid'] } });
+    }
+
+    return res.status(200).json({ result: 'success' });
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 // 해당 날짜의 근무표 조회(민철님 작업)
 exports.get_duty_schedule = async function (req, res) {
-  let {
+  const {
     duty_pid,
-    usr_division_code,           // 근무 PID
-    date
+    usr_division_code, // 근무 PID
+    date,
   } = req.body;
 };
 
 // 유저 근무 대시보드 조회(수정중)
 exports.get_user_duty_on_dashboard = async function (req, res) {
-  let {
-    user_pid,
-  } = req.body;
-}
+  const { user_pid } = req.body;
+};
 
 // 본인(병사)의 근무 스케줄 조회(수정중)
 exports.get_user_duty_schedule = async function (req, res) {
-  let {
-    user_pid,
-    user_division_code,
-  } = req.body;
+  const { user_pid, user_division_code } = req.body;
 
-  const user_duty_data = Duty_Schedule.findAll(
-    {
-      where: {
-        usr_pid: user_pid,
-        duty_schedule_division_code: user_division_code,
-      }
-    });
+  const user_duty_data = Duty_Schedule.findAll({
+    where: {
+      usr_pid: user_pid,
+      duty_schedule_division_code: user_division_code,
+    },
+  });
   // 여기서 타임슬롯 PID를 불러와야 한다.
-
 
   res.status(200).json({ result: 'success', user_duty_data });
 };
