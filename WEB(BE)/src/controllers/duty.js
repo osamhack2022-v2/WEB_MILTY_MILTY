@@ -85,123 +85,130 @@ exports.get_duty_timeslot = async (req, res) => {
 exports.set_duty_schedule = async (req, res) => {
   const { user_division_code, date } = req.body;
 
-  // ==== Region : 해당 부대의 duty_pid 리스트 불러오기 ====
-  const duty_pid_objects = await Duty.findAll({
-    attributes: ['duty_pid', 'usr_division_code'],
-    where: { usr_division_code: user_division_code },
-  });
-
-  let duty_pid_list = [];
-  for (const d of duty_pid_objects)
-    duty_pid_list.push(d.dataValues['duty_pid']);
-
-  console.log('##### duty pid list #####\n', duty_pid_list);
-
-  // 해당 일자 timeslots 리스트(timeslot_pid, timeslot_point 가 중요)(이 부분 고쳐야 합니다.)
-  let timeslot_list = [];
-  for (const duty_pid of duty_pid_list) {
-    const timeslots_objects = await Timeslot.findAll({
-      attributes: ['timeslot_pid', 'timeslot_point', 'duty_pid'],
-      where: { duty_pid: duty_pid },
+  try {
+    // ==== Region : 해당 부대의 duty_pid 리스트 불러오기 ====
+    const duty_pid_objects = await Duty.findAll({
+      attributes: ['duty_pid', 'usr_division_code'],
+      where: { usr_division_code: user_division_code },
     });
 
-    for (const d of timeslots_objects)
-      timeslot_list.push({
-        timeslot_pid: d.dataValues['timeslot_pid'],
-        timeslot_point: d.dataValues['timeslot_point'],
-        duty_pid: d.dataValues['duty_pid'],
+    let duty_pid_list = [];
+    for (const d of duty_pid_objects)
+      duty_pid_list.push(d.dataValues['duty_pid']);
+
+    console.log('##### duty pid list #####\n', duty_pid_list);
+
+    // 해당 일자 timeslots 리스트(timeslot_pid, timeslot_point 가 중요)(이 부분 고쳐야 합니다.)
+    let timeslot_list = [];
+    for (const duty_pid of duty_pid_list) {
+      const timeslots_objects = await Timeslot.findAll({
+        attributes: ['timeslot_pid', 'timeslot_point', 'duty_pid'],
+        where: { duty_pid: duty_pid },
       });
-  }
 
-  console.log('timeslots 리스트', timeslot_list);
-  // ==== End Region ====
+      for (const d of timeslots_objects)
+        timeslot_list.push({
+          timeslot_pid: d.dataValues['timeslot_pid'],
+          timeslot_point: d.dataValues['timeslot_point'],
+          duty_pid: d.dataValues['duty_pid'],
+        });
+    }
 
-  // ==== Start Region : 현재 열외자 리스트 생성((이 부분 고쳐야 합니다. 열외자 리스트는 잘 나오는데 기간에 따라서 걸려지지가 않습니다.) ====
-  const current_excluder_objects = await Exempt.findAll({
-    attributes: ['usr_pid'],
-    where: { exempt_division_code: user_division_code },
-    [Op.and]: [
-      {
-        timeslot_start: { [Op.lte]: date },
-      },
-      {
-        timeslot_end: { [Op.gte]: date },
-      },
-    ],
-  });
-  let current_excluder_list = [];
-  for (const d of current_excluder_objects)
-    current_excluder_list.push(d.dataValues['usr_pid']);
-  console.log('현재 열외자 리스트 : ', current_excluder_list);
+    console.log('timeslots 리스트', timeslot_list);
+    // ==== End Region ====
 
-  // 근무자 리스트 생성(후보 user들의 리스트)
-  const usrs_objects = await User.findAll({
-    attributes: ['usr_pid', 'usr_point'],
-    where: {
-      [Op.and]: {
-        usr_division_code: user_division_code,
-        usr_class: {
-          [Op.or]: ['이병', '일병', '상병', '병장'],
+    // ==== Start Region : 현재 열외자 리스트 생성((이 부분 고쳐야 합니다. 열외자 리스트는 잘 나오는데 기간에 따라서 걸려지지가 않습니다.) ====
+    const current_excluder_objects = await Exempt.findAll({
+      attributes: ['usr_pid'],
+      where: { exempt_division_code: user_division_code },
+      [Op.and]: [
+        {
+          timeslot_start: { [Op.lte]: date },
+        },
+        {
+          timeslot_end: { [Op.gte]: date },
+        },
+      ],
+    });
+    let current_excluder_list = [];
+    for (const d of current_excluder_objects)
+      current_excluder_list.push(d.dataValues['usr_pid']);
+    console.log('현재 열외자 리스트 : ', current_excluder_list);
+
+    // 근무자 리스트 생성(후보 user들의 리스트)
+    const usrs_objects = await User.findAll({
+      attributes: ['usr_pid', 'usr_point'],
+      where: {
+        [Op.and]: {
+          usr_division_code: user_division_code,
+          usr_class: {
+            [Op.or]: ['이병', '일병', '상병', '병장'],
+          },
         },
       },
-    },
-  });
-
-  // SQL 문에서 열외자를 거르는 대신, 미리 다 불러놓고 JS단에서 열외자 리스트에 있는 경우를 제외했습니다.
-  let usr_list = [];
-  for (const d of usrs_objects) {
-    if (current_excluder_list.indexOf(d.dataValues['usr_pid']) != -1) continue;
-    usr_list.push({
-      usr_pid: d.dataValues['usr_pid'],
-      usr_point: d.dataValues['usr_point'],
-    });
-  }
-  console.log('근무자 리스트 : ', usr_list);
-
-  // ==== End Region ====
-
-  // 근무자 - 근무 매칭
-  usr_list.sort((a, b) => {
-    return a['usr_point'] > b['usr_point'];
-  });
-  // 최악의 상황에서도 근무 가능자 수 x 4 >= 필요 근무자라고 가정 (일반적으로는 근무 가능자 >= 필요 근무자)
-  usr_list = usr_list.concat(usr_list.slice());
-  usr_list = usr_list.concat(usr_list.slice());
-
-  timeslot_list.sort((a, b) => {
-    return a['timeslot_point'] < b['timeslot_point'];
-  });
-
-  console.log('정렬된 timeslot 리스트:', timeslot_list);
-
-  for (let i = 0; i < timeslot_list.length; i++) {
-    // timeslot_list[i]와 usr_list[i]를 매칭
-    console.log(
-      'matching ' +
-        usr_list[i]['usr_pid'] +
-        ' -- ' +
-        timeslot_list[i]['timeslot_pid'],
-    );
-    Duty_Schedule.create({
-      duty_schedule_division_code: user_division_code,
-      duty_schedule_date: date,
-      timeslot_pid: timeslot_list[i]['timeslot_pid'],
-      usr_pid: usr_list[i]['usr_pid'],
-      duty_pid: timeslot_list[i]['duty_pid'],
     });
 
-    console.log('duty_schedule 모델 데이터:', await Duty_Schedule.findAll());
-    // usr_list[i]['usr_pid']를 가진 user의 usr_point에 timeslot_list[i]['timeslot_point'] 가산
-    // UPDATE User
-    //   SET usr_point = usr_point + timeslot_list[i]['timeslot_point']
-    //   WHERE usr_pid = usr_list[i]['usr_pid']
-    User.increment(
-      { usr_point: timeslot_list[i]['timeslot_point'] },
-      { where: { usr_pid: usr_list[i]['usr_pid'] } },
-    );
-  }
+    // SQL 문에서 열외자를 거르는 대신, 미리 다 불러놓고 JS단에서 열외자 리스트에 있는 경우를 제외했습니다.
+    let usr_list = [];
+    for (const d of usrs_objects) {
+      if (current_excluder_list.indexOf(d.dataValues['usr_pid']) != -1)
+        continue;
+      usr_list.push({
+        usr_pid: d.dataValues['usr_pid'],
+        usr_point: d.dataValues['usr_point'],
+      });
+    }
+    console.log('근무자 리스트 : ', usr_list);
 
-  return res.status(200).json({ result: 'success' });
+    // 근무자 - 근무 매칭
+    if (usr_list.length < timeslot_list.length)
+      throw new Error('근무 가능 인원 부족');
+
+    usr_list.sort((a, b) => {
+      return a['usr_point'] > b['usr_point'];
+    });
+    // 최악의 상황에서도 근무 가능자 수 x 4 >= 필요 근무자라고 가정 (일반적으로는 근무 가능자 >= 필요 근무자)
+    usr_list = usr_list.concat(usr_list.slice());
+    usr_list = usr_list.concat(usr_list.slice());
+
+    timeslot_list.sort((a, b) => {
+      return a['timeslot_point'] < b['timeslot_point'];
+    });
+
+    console.log('정렬된 timeslot 리스트:', timeslot_list);
+
+    for (let i = 0; i < timeslot_list.length; i++) {
+      // timeslot_list[i]와 usr_list[i]를 매칭
+      console.log(
+        'matching ' +
+          usr_list[i]['usr_pid'] +
+          ' -- ' +
+          timeslot_list[i]['timeslot_pid'],
+      );
+      Duty_Schedule.create({
+        duty_schedule_division_code: user_division_code,
+        duty_schedule_date: date,
+        timeslot_pid: timeslot_list[i]['timeslot_pid'],
+        usr_pid: usr_list[i]['usr_pid'],
+        duty_pid: timeslot_list[i]['duty_pid'],
+      });
+
+      console.log('duty_schedule 모델 데이터:', await Duty_Schedule.findAll());
+      // usr_list[i]['usr_pid']를 가진 user의 usr_point에 timeslot_list[i]['timeslot_point'] 가산
+      // UPDATE User
+      //   SET usr_point = usr_point + timeslot_list[i]['timeslot_point']
+      //   WHERE usr_pid = usr_list[i]['usr_pid']
+      User.increment(
+        { usr_point: timeslot_list[i]['timeslot_point'] },
+        { where: { usr_pid: usr_list[i]['usr_pid'] } },
+      );
+    }
+
+    return res.status(200).json({ result: 'success' });
+  } catch (err) {
+    console.warn(err);
+    return res.status(200).json({ result: 'fail' });
+  }
 };
 
 // 해당 날짜의 근무표 조회
