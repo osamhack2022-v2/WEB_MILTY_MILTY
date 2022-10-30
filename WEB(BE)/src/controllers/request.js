@@ -106,18 +106,26 @@ exports.user_set_duty_request = async (req, res) => {
   }
 };
 
-// 관리자 근무 변경 요청 승인/거부(근무 변경 로직 구현 필요)
+// 관리자 근무 변경 요청 승인/거부
 exports.admin_set_duty_request = async (req, res) => {
   const { pid, status } = req.body;
   try {
+    const request = await Request.findOne({ where: { request_pid: pid } });
+
+    if (request.request_type === 0) throw new Error('wrong request_type'); // 건의사항
+
+    // 근무 변경 승인
+    if (status === 2) {
+      await Schedule.update(
+        { usr_pid: request.request_change_usr },
+        { where: { duty_schedule_pid: request.duty_schedule_pid } },
+      );
+    }
     await Request.update(
-      {
-        request_status: status,
-      },
-      {
-        where: { request_pid: pid },
-      },
+      { request_status: status },
+      { where: { request_pid: pid } },
     );
+
     res.status(200).json({
       result: 'success',
     });
