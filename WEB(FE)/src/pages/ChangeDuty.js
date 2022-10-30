@@ -17,37 +17,6 @@ import CustomCalendar from "../components/CustomCalendar";
 
 const { Content } = Layout;
 
-const schedule = [
-  {
-    pid: 1,
-    date: "2022-10-08",
-    name: "무기고",
-    startTime: "08:00",
-    endTime: "12:00",
-  },
-  {
-    pid: 2,
-    date: "2022-10-15",
-    name: "위병소",
-    startTime: "12:00",
-    endTime: "16:00",
-  },
-  {
-    pid: 3,
-    date: "2022-10-15",
-    name: "CCTV",
-    startTime: "20:00",
-    endTime: "22:00",
-  },
-  {
-    pid: 4,
-    date: "2022-10-17",
-    name: "CCTV",
-    startTime: "20:00",
-    endTime: "22:00",
-  },
-];
-
 const color = (name) => {
   switch (name) {
     case "CCTV":
@@ -71,7 +40,7 @@ const ChangeDuty = () => {
   const [selectedSchedule, setSelectedSchedule] = useState({});
   const [options, setOptions] = useState([]);
   const [open, setOpen] = useState(false);
-  // const [schedule, setSchedule] = useState([]);
+  const [schedule, setSchedule] = useState([]);
 
   const onFinish = (values) => {
     const { target, reason } = values;
@@ -105,9 +74,9 @@ const ChangeDuty = () => {
       .then((response) => {
         if (response.status === 200 && response.data.result === "success") {
           setOptions(
-            response.data.users.map((user) => ({
-              label: `${user.user_class} ${user.user_name}`,
-              value: user.user_pid,
+            response.data.users.map((item) => ({
+              label: `${item.user_class} ${item.user_name}`,
+              value: item.user_pid,
             }))
           );
         }
@@ -117,7 +86,23 @@ const ChangeDuty = () => {
       });
   }, [user]);
 
+  const fetchUserDutySchedule = useCallback(() => {
+    axios
+      .post("/api/user/get-duty-schedule", {
+        user_pid: user.user_pid,
+      })
+      .then((response) => {
+        if (response.status === 200 && response.data.result === "success") {
+          setSchedule(response.data.schedule);
+        }
+      })
+      .catch((error) => {
+        console.warn(error);
+      });
+  }, [user]);
+
   useEffect(() => {
+    fetchUserDutySchedule();
     fetchSoldier();
   }, []);
 
@@ -136,9 +121,9 @@ const ChangeDuty = () => {
                 setOpen(true);
               }}
             >
-              <Tag color={color(item.name)}>{item.name}</Tag>
+              <Tag color={color(item.duty_name)}>{item.duty_name}</Tag>
               <span>
-                {item.startTime}-{item.endTime}
+                {item.start_time}-{item.end_time}
               </span>
             </Button>
           ))}
@@ -163,12 +148,12 @@ const ChangeDuty = () => {
           onClose={() => setOpen(false)}
           open={open}
         >
-          <Tag color={color(selectedSchedule.name)}>
-            {selectedSchedule.name}
+          <Tag color={color(selectedSchedule.duty_name)}>
+            {selectedSchedule.duty_name}
           </Tag>
           <span>
-            {selectedSchedule.date} / {selectedSchedule.startTime}-
-            {selectedSchedule.endTime}
+            {selectedSchedule.date} / {selectedSchedule.start_time}-
+            {selectedSchedule.end_time}
           </span>
           <Divider />
           <Form
