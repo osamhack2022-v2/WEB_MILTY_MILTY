@@ -93,10 +93,11 @@
 * ![React](https://img.shields.io/badge/React-61DAFB.svg?&style=for-the-badge&logo=React&logoColor=white)
 * ![Ant Design](https://img.shields.io/badge/AntDesign-0170FE.svg?&style=for-the-badge&logo=AntDesign&logoColor=white)
 
-<h3>DataBase</h3>
+<h3>DataBase&Server</h3>
 
 * ![MariaDB](https://img.shields.io/badge/MariaDB-003545.svg?&style=for-the-badge&logo=MariaDB&logoColor=white)
 * ![Sequelize](https://img.shields.io/badge/Sequelize-52B0E7.svg?&style=for-the-badge&logo=Sequelize&logoColor=white)
+* ![Microsoft Azure](https://img.shields.io/badge/MicrosoftAzure-0078D4.svg?&style=for-the-badge&logo=MicrosoftAzure&logoColor=white)
 
 
 ## :wrench:설치 안내 (Installation Process)
@@ -116,6 +117,7 @@ $ npm install(or npm update)
 ```
 
 3. WEB(BE) 경로에서 npm start로 실행
+(단, DB 서버는 Azure 클라우드 실행 시간(월~금 : 18:00 – 24:00- 주말 및 공휴일 : 09:00 – 24:00)에 열림)
 ```
 $ # /workspaces/WEB_MILTY_MILTY/WEB(BE)
 $ npm start
